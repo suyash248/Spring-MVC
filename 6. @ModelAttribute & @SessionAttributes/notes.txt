@@ -1,0 +1,58 @@
+@ModelAttribute can be applied on Method or Method argument.
+
+1. when @ModelAttribute is at only method level
+------------------------------------------------
+All the methods that are annotated with @ModelAttribute annotation are executed first and the result of those mthods are stored in temporary map.
+
+Then the handler method(s) are executed and after completing the execution of handler method, that temporary map is added to model and can be accessed inside view.
+
+2. When @ModelAttribute is at method level and also method argument in handler method
+--------------------------------------------------------------------------------------
+All the methods that are annotated with @ModelAttribute annotation are executed first and the result of those mthods are stored in temporary map.
+
+Then when the handler method(s) are executed, it checks if ModelAttribute's value in argument is matched to any @ModelAttribute's value on method's
+
+if Yes, then it assigns same object into the argument, passes into method and after changes it added to model.
+if No, then it implicitly cretes new object, passes this object into method and after changes it added to model. So if the argument type is an abstract class or a interface then it can't be instanciated hence exception will occur.
+
+3. Using @SessionAttributes
+---------------------------
+When ever we use @ModelAttribute in our method, 
+ if value is at @SessionAttribute, the model object will be pre populated with values from session.
+ if not, new object will be created.
+ And that value will be updated into session.
+
+
+@Controller
+@RequestMapping("/")
+@SessionAttribute(value={"userDetail", "employeeDetail"}, type={"UserDetail.class", "Employee.class"})
+public class HelloController {
+	
+	@RequestMapping("/hello")
+	public String sayHello(Model model) {
+		UserDetail userDetail = new UserDetail();
+		userDetail.setUserName("Ramu");
+		userDetail.setAge(20);
+		model.addAttribute(userDetail1);
+		return "hellopage";
+	}
+
+}
+
+
+HttpSession session;
+UserDetail userDetail = new UserDetail();
+userDetail.setUserName("Ramu");
+userDetail.setAge("12");
+session.setAttribute("userDetail", userDetail);
+
+
+
+
+	@ModelAttribute(value="userDetail")
+	public UserDetail fetchUserDetail() {
+		UserDetail userDetail = new UserDetail();
+		userDetail.setUserName("Ramu");
+		userDetail.setAge("12");
+		return userDetail;
+	} 

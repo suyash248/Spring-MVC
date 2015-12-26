@@ -1,0 +1,32 @@
+@RequestBody ->   JSON to Java Object
+@ResponseBody ->  Java Object to JSON
+
+Usage examples would be something like this:
+
+Using a JavaScript-library like JQuery, you would post a JSON-Object like this:
+
+{ "firstName" : "Elmer", "lastName" : "Fudd" }
+Your controller method would look like this:
+
+// controller
+@ResponseBody @RequestMapping("/description")
+public Description getDescription(@RequestBody UserStats stats){
+    return new Description(stats.getFirstName() + " " + stats.getLastname() + " hates wacky wabbits");
+}
+
+// domain / value objects
+public class UserStats{
+    private String firstName;
+    private String lastName;
+    // + getters, setters
+}
+public class Description{
+    private String description;
+    // + getters, setters, constructor
+}
+Now if you have Jackson on your classpath (and have an <mvc:annotation-driven> setup), Spring would convert the incoming JSON to a UserStats object from the post body 
+(because you added the @RequestBody annotation) and it would serialize the returned object to JSON (because you added the @ResponseBody annotation). 
+So the Browser / Client would see this JSON result:
+
+{ "description" : "Elmer Fudd hates wacky wabbits" }
+See this previous answer of mine for a complete working example: http://stackoverflow.com/a/5908632/342852
